@@ -1,10 +1,18 @@
 package me.donghun.guestbook.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryFactory;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import me.donghun.guestbook.entity.Guestbook;
+import me.donghun.guestbook.entity.QGuestbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -40,6 +48,33 @@ class GuestbookRepositoryTest {
 
             guestbookRepository.save(guestbook);
         });
+    }
+
+    // querydsl 테스트
+    @Test
+    @DisplayName("Querydsl 단일 항목 검색")
+    void querydslTest1() {
+        String keyword = "1";
+        Page<Guestbook> result = guestbookRepository.findAll(
+                QGuestbook.guestbook.title.contains(keyword),
+                PageRequest.of(0, 10, Sort.by("gno").descending())
+        );
+
+        result.stream().forEach(System.out::println);
+    }
+
+    @Test
+    @DisplayName("Querydsl 다중 항목 검색")
+    void querydslTest2() {
+        String keyword = "1";
+        QGuestbook qGuestbook = QGuestbook.guestbook;
+        Page<Guestbook> result = guestbookRepository.findAll(
+                qGuestbook.title.contains(keyword)
+                        .or(qGuestbook.content.contains(keyword))
+                        .and(qGuestbook.gno.gt(0L)),
+                PageRequest.of(0, 10, Sort.by("gno").descending()));
+
+        result.stream().forEach(System.out::println);
     }
 
 }
