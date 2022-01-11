@@ -39,6 +39,32 @@ class GuestbookServiceTest {
     }
 
     @Test
+    @DisplayName("엔티티 클래스를 DTO로 변환")
+    void entityToDto() {
+        Guestbook entity = Guestbook.builder()
+                .gno(1L)
+                .title("title")
+                .content("content")
+                .writer("writer")
+                .build();
+
+        GuestbookDTO dto = GuestbookDTO.builder()
+                .gno(1L)
+                .title("title")
+                .content("content")
+                .writer("writer")
+                .build();
+
+        GuestbookDTO afterConvert = guestbookService.entityToDto(entity);
+        assertThat(afterConvert.getGno()).isEqualTo(dto.getGno());
+        assertThat(afterConvert.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(afterConvert.getContent()).isEqualTo(dto.getContent());
+        assertThat(afterConvert.getWriter()).isEqualTo(dto.getWriter());
+        assertThat(afterConvert.getModDate()).isEqualTo(dto.getModDate());
+        assertThat(afterConvert.getRegDate()).isEqualTo(dto.getRegDate());
+    }
+
+    @Test
     @DisplayName("DTO를 엔티티 클래스로 변환")
     void dtoToEntity() {
         GuestbookDTO guestbookDTO = GuestbookDTO.builder()
