@@ -28,11 +28,16 @@ class GuestbookServiceTest {
     @DisplayName("목록 조회")
     void getList() {
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
-                .page(3)
+                .page(17)
                 .size(10)
                 .build();
 
         PageResultDTO<GuestbookDTO, Guestbook> pageResultDTO = guestbookService.getList(pageRequestDTO);
+
+        assertThat(pageResultDTO.isPrev()).isTrue();
+        assertThat(pageResultDTO.isNext()).isTrue();
+        assertThat(pageResultDTO.getPageList().get(0)).isEqualTo(11);
+        assertThat(pageResultDTO.getPageList().get(9)).isEqualTo(20);
 
         List<GuestbookDTO> dtoList = pageResultDTO.getDtoList();
 
