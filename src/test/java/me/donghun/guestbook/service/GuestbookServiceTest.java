@@ -1,6 +1,8 @@
 package me.donghun.guestbook.service;
 
 import me.donghun.guestbook.dto.GuestbookDTO;
+import me.donghun.guestbook.dto.PageRequestDTO;
+import me.donghun.guestbook.dto.PageResultDTO;
 import me.donghun.guestbook.entity.Guestbook;
 import me.donghun.guestbook.repository.GuestbookRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +21,19 @@ class GuestbookServiceTest {
 
     @Autowired
     private GuestbookRepository guestbookRepository;
+
+    @Test
+    @DisplayName("목록 조회")
+    void getList() {
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(3)
+                .size(10)
+                .build();
+
+        PageResultDTO<GuestbookDTO, Guestbook> pageResultDTO = guestbookService.getList(pageRequestDTO);
+
+        assertThat(pageResultDTO.getDtoList().size()).isEqualTo(10);
+    }
 
     @Test
     @DisplayName("등록")
@@ -67,25 +80,25 @@ class GuestbookServiceTest {
     @Test
     @DisplayName("DTO를 엔티티 클래스로 변환")
     void dtoToEntity() {
-        GuestbookDTO guestbookDTO = GuestbookDTO.builder()
+        GuestbookDTO dto = GuestbookDTO.builder()
                 .gno(1L)
                 .title("title")
                 .content("content")
                 .writer("writer")
                 .build();
 
-        Guestbook guestbook = Guestbook.builder()
+        Guestbook entity = Guestbook.builder()
                 .gno(1L)
                 .title("title")
                 .content("content")
                 .writer("writer")
                 .build();
 
-        Guestbook afterConvert = guestbookService.dtoToEntity(guestbookDTO);
-        assertThat(afterConvert.getGno()).isEqualTo(guestbook.getGno());
-        assertThat(afterConvert.getTitle()).isEqualTo(guestbook.getTitle());
-        assertThat(afterConvert.getContent()).isEqualTo(guestbook.getContent());
-        assertThat(afterConvert.getWriter()).isEqualTo(guestbook.getWriter());
+        Guestbook afterConvert = guestbookService.dtoToEntity(dto);
+        assertThat(afterConvert.getGno()).isEqualTo(entity.getGno());
+        assertThat(afterConvert.getTitle()).isEqualTo(entity.getTitle());
+        assertThat(afterConvert.getContent()).isEqualTo(entity.getContent());
+        assertThat(afterConvert.getWriter()).isEqualTo(entity.getWriter());
         assertThat(afterConvert.getModDate()).isNull();
         assertThat(afterConvert.getRegDate()).isNull();
     }
