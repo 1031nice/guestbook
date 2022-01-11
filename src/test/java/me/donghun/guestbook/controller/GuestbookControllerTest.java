@@ -9,8 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,10 +19,20 @@ class GuestbookControllerTest {
     MockMvc mockMvc;
 
     @Test
-    @DisplayName("목록 화면")
+    @DisplayName("루트 요청시 목록 화면으로 redirect")
+    void index() throws Exception {
+        mockMvc.perform(get("/guestbook/"))
+                .andExpect(view().name("/guestbook/list"))
+                .andExpect(status().is3xxRedirection())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("목록 조회")
     void list() throws Exception {
         mockMvc.perform(get("/guestbook/list"))
                 .andExpect(view().name("/guestbook/list"))
+                .andExpect(model().attributeExists("result"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
