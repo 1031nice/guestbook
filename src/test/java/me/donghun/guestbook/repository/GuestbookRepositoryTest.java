@@ -1,9 +1,5 @@
 package me.donghun.guestbook.repository;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryFactory;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import me.donghun.guestbook.entity.Guestbook;
 import me.donghun.guestbook.entity.QGuestbook;
 import org.junit.jupiter.api.DisplayName;
