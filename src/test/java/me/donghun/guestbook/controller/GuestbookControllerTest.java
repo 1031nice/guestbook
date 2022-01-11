@@ -22,7 +22,6 @@ class GuestbookControllerTest {
     @DisplayName("루트 요청시 목록 화면으로 redirect")
     void index() throws Exception {
         mockMvc.perform(get("/guestbook/"))
-                .andExpect(view().name("/guestbook/list"))
                 .andExpect(status().is3xxRedirection())
                 .andDo(print());
     }
@@ -31,7 +30,7 @@ class GuestbookControllerTest {
     @DisplayName("목록 조회")
     void list() throws Exception {
         mockMvc.perform(get("/guestbook/list"))
-                .andExpect(view().name("/guestbook/list"))
+                .andExpect(view().name("guestbook/list"))
                 .andExpect(model().attributeExists("result"))
                 .andExpect(status().isOk())
                 .andDo(print());
