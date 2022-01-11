@@ -1,10 +1,14 @@
 package me.donghun.guestbook.service;
 
 import me.donghun.guestbook.dto.GuestbookDTO;
+import me.donghun.guestbook.dto.PageRequestDTO;
+import me.donghun.guestbook.dto.PageResultDTO;
 import me.donghun.guestbook.entity.Guestbook;
 
 public interface GuestbookService {
     Long register(GuestbookDTO dto);
+
+    PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO);
 
     default Guestbook dtoToEntity(GuestbookDTO dto) {
         return Guestbook.builder()

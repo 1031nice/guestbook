@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -32,7 +34,10 @@ class GuestbookServiceTest {
 
         PageResultDTO<GuestbookDTO, Guestbook> pageResultDTO = guestbookService.getList(pageRequestDTO);
 
-        assertThat(pageResultDTO.getDtoList().size()).isEqualTo(10);
+        List<GuestbookDTO> dtoList = pageResultDTO.getDtoList();
+
+        assertThat(dtoList.get(0)).isInstanceOf(GuestbookDTO.class);
+        assertThat(dtoList.size()).isEqualTo(10);
     }
 
     @Test
