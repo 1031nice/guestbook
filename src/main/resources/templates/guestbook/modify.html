@@ -42,6 +42,22 @@
 
         <button type="button" class="btn btn-danger removeBtn">Remove</button>
 
+        <script th:inline="javascript">
+
+            var actionForm = $("form"); //form 태그 객체
+
+            $(".removeBtn").click(function(){
+
+                actionForm
+                    .attr("action", "/guestbook/remove")
+                    .attr("method","post");
+
+                actionForm.submit();
+
+            });
+
+        </script>
+
     </th:block>
 
 </th:block>
