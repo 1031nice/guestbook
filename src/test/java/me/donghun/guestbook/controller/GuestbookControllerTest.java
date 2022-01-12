@@ -1,5 +1,6 @@
 package me.donghun.guestbook.controller;
 
+import me.donghun.guestbook.entity.Guestbook;
 import me.donghun.guestbook.repository.GuestbookRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,17 @@ class GuestbookControllerTest {
 
     @Autowired
     GuestbookRepository guestbookRepository;
+
+    @Test
+    @DisplayName("수정")
+    void modify() throws Exception {
+        mockMvc.perform(get("/guestbook/modify")
+                        .param("gno", "1"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("dto"))
+                .andExpect(model().attributeExists("requestDTO"))
+                .andDo(print());
+    }
 
     @Test
     @DisplayName("조회")
