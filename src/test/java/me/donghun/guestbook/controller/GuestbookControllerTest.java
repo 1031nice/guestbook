@@ -52,7 +52,7 @@ class GuestbookControllerTest {
     @DisplayName("수정 화면으로 이동")
     void modifyView() throws Exception {
         mockMvc.perform(get("/guestbook/modify")
-                        .param("gno", "1"))
+                        .param("gno", "150"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("dto"))
                 .andExpect(model().attributeExists("requestDTO"))
@@ -78,8 +78,7 @@ class GuestbookControllerTest {
                         .param("title", newTitle)
                         .param("content", newContent))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/guestbook/read"))
-                .andExpect(flash().attributeExists("page", "gno"))
+                .andExpect(model().attributeExists("page", "gno"))
                 .andDo(print());
 
         Optional<Guestbook> result = guestbookRepository.findById(guestbook.getGno());
@@ -92,7 +91,7 @@ class GuestbookControllerTest {
     @DisplayName("조회")
     void read() throws Exception {
         mockMvc.perform(get("/guestbook/read")
-                        .param("gno", "1"))
+                        .param("gno", "150"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("dto"))
                 .andExpect(model().attributeExists("requestDTO"))
