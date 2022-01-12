@@ -27,6 +27,26 @@ class GuestbookControllerTest {
     GuestbookRepository guestbookRepository;
 
     @Test
+    @DisplayName("삭제")
+    void delete() throws Exception {
+        Guestbook guestbook = Guestbook.builder()
+                .title("test_title")
+                .content("test_content")
+                .writer("test_writer")
+                .build();
+        guestbookRepository.save(guestbook);
+
+        mockMvc.perform(post("/guestbook/remove")
+                        .param("gno", guestbook.getGno().toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/guestbook/list"))
+                .andExpect(flash().attributeExists("msg"))
+                .andDo(print());
+
+        assertThat(guestbookRepository.findById(guestbook.getGno())).isEmpty();
+    }
+
+    @Test
     @DisplayName("수정")
     void modify() throws Exception {
         mockMvc.perform(get("/guestbook/modify")
