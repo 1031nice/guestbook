@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,14 +49,43 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("수정")
-    void modify() throws Exception {
+    @DisplayName("수정 화면으로 이동")
+    void modifyView() throws Exception {
         mockMvc.perform(get("/guestbook/modify")
                         .param("gno", "1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("dto"))
                 .andExpect(model().attributeExists("requestDTO"))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("수정")
+    @Transactional
+    void modify() throws Exception {
+        Guestbook guestbook = Guestbook.builder()
+                .title("test_title")
+                .content("test_content")
+                .writer("test_writer")
+                .build();
+        guestbookRepository.save(guestbook);
+
+        String newTitle = "new_title";
+        String newContent = "new_content";
+
+        mockMvc.perform(post("/guestbook/modify")
+                        .param("gno", guestbook.getGno().toString())
+                        .param("title", newTitle)
+                        .param("content", newContent))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/guestbook/read"))
+                .andExpect(flash().attributeExists("page", "gno"))
+                .andDo(print());
+
+        Optional<Guestbook> result = guestbookRepository.findById(guestbook.getGno());
+        assertThat(result).isNotEmpty();
+        assertThat(result.get().getTitle()).isEqualTo(newTitle);
+        assertThat(result.get().getContent()).isEqualTo(newContent);
     }
 
     @Test
