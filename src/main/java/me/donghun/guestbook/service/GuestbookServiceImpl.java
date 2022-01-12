@@ -20,6 +20,22 @@ public class GuestbookServiceImpl implements GuestbookService {
     private final GuestbookRepository guestbookRepository;
 
     @Override
+    public void remove(Long gno) {
+        guestbookRepository.deleteById(gno);
+    }
+
+    @Override
+    public void modify(GuestbookDTO dto) {
+        Optional<Guestbook> result = guestbookRepository.findById(dto.getGno());
+
+        result.ifPresent(guestbook -> {
+            guestbook.changeTitle(dto.getTitle());
+            guestbook.changeContent(dto.getContent());
+            guestbookRepository.save(guestbook);
+        });
+    }
+
+    @Override
     public GuestbookDTO read(Long gno) {
         Optional<Guestbook> result = guestbookRepository.findById(gno);
         return result.map(this::entityToDto).orElse(null);
