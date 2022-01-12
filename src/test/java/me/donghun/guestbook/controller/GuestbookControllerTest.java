@@ -19,6 +19,15 @@ class GuestbookControllerTest {
     MockMvc mockMvc;
 
     @Test
+    @DisplayName("등록 화면")
+    void register() throws Exception {
+        mockMvc.perform(get("/guestbook/register"))
+                .andExpect(view().name("guestbook/register"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("루트 요청시 목록 화면으로 redirect")
     void index() throws Exception {
         mockMvc.perform(get("/guestbook/"))
