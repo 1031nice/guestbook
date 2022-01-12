@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -21,6 +22,7 @@ class GuestbookRepositoryTest {
 
     @Test
     @DisplayName("방명록 저장")
+    @Transactional
     void save() {
         IntStream.rangeClosed(1, 300).forEach(i -> {
             Guestbook guestbook = Guestbook.builder()
