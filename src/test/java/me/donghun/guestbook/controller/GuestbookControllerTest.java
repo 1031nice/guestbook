@@ -32,6 +32,7 @@ class GuestbookControllerTest {
                         .param("gno", "1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("dto"))
+                .andExpect(model().attributeExists("requestDTO"))
                 .andDo(print());
     }
 
