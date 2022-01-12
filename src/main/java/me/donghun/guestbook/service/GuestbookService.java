@@ -6,6 +6,10 @@ import me.donghun.guestbook.dto.PageResultDTO;
 import me.donghun.guestbook.entity.Guestbook;
 
 public interface GuestbookService {
+    void remove(Long gno);
+
+    void modify(GuestbookDTO dto);
+
     GuestbookDTO read(Long gno);
 
     Long register(GuestbookDTO dto);
