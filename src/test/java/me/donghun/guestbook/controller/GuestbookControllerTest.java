@@ -117,7 +117,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("등록 화면")
+    @DisplayName("등록 화면으로 이동")
     void registerView() throws Exception {
         mockMvc.perform(get("/guestbook/register"))
                 .andExpect(view().name("guestbook/register"))
@@ -126,7 +126,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("루트 요청시 목록 화면으로 redirect")
+    @DisplayName("루트 요청시 목록 화면으로 이동")
     void index() throws Exception {
         mockMvc.perform(get("/guestbook/"))
                 .andExpect(status().is3xxRedirection())
