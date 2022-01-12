@@ -26,6 +26,17 @@ class GuestbookControllerTest {
     GuestbookRepository guestbookRepository;
 
     @Test
+    @DisplayName("조회")
+    void read() throws Exception {
+        mockMvc.perform(get("/guestbook/read")
+                        .param("gno", "1"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("dto"))
+                .andExpect(model().attributeExists("requestDTO"))
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("등록")
     @Transactional
     void register() throws Exception {

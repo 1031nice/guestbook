@@ -10,12 +10,20 @@ import me.donghun.guestbook.repository.GuestbookRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class GuestbookServiceImpl implements GuestbookService {
 
     private final GuestbookRepository guestbookRepository;
+
+    @Override
+    public GuestbookDTO read(Long gno) {
+        Optional<Guestbook> result = guestbookRepository.findById(gno);
+        return result.map(this::entityToDto).orElse(null);
+    }
 
     @Override
     public Long register(GuestbookDTO dto) {

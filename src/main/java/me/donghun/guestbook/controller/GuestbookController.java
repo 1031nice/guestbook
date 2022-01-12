@@ -8,6 +8,7 @@ import me.donghun.guestbook.service.GuestbookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -43,6 +44,13 @@ public class GuestbookController {
         Long gno = guestbookService.register(dto);
         redirectAttributes.addFlashAttribute("msg", gno);
         return "redirect:/guestbook/list";
+    }
+
+    @GetMapping("read")
+    public void read(long gno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
+        log.info("gno....." + gno);
+        GuestbookDTO dto = guestbookService.read(gno);
+        model.addAttribute("dto", dto);
     }
 
 }
