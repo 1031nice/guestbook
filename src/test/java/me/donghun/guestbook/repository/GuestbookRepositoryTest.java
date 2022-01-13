@@ -65,6 +65,21 @@ class GuestbookRepositoryTest {
     }
 
     @Test
+    @DisplayName("제목으로 방명록 찾기")
+    void findByTitle() {
+        Guestbook guestbook = Guestbook.builder()
+                .title("test title")
+                .content("test content")
+                .writer("user")
+                .build();
+        guestbookRepository.save(guestbook);
+
+        Optional<Guestbook> optionalGuestbook = guestbookRepository.findByTitle(guestbook.getTitle());
+        assertThat(optionalGuestbook).isNotEmpty();
+        assertThat(optionalGuestbook.get().getTitle()).isEqualTo(guestbook.getTitle());
+    }
+
+    @Test
     @DisplayName("Querydsl 단일 항목 검색")
     void querydslTest1() {
         String keyword = "1";
