@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 class GuestbookRepositoryTest {
 
@@ -24,31 +26,44 @@ class GuestbookRepositoryTest {
     @DisplayName("방명록 저장")
     @Transactional
     void save() {
-        IntStream.rangeClosed(1, 300).forEach(i -> {
+        int startInclusive = 499;
+        int endInclusive = 599;
+        IntStream.rangeClosed(startInclusive, endInclusive).forEach(i -> {
             Guestbook guestbook = Guestbook.builder()
-                    .title("Title...." + i)
-                    .content("Content...." + i)
+                    .title("Title" + i)
+                    .content("Content" + i)
                     .writer("User" + (i % 10))
                     .build();
+            guestbookRepository.save(guestbook);
+        });
 
-            System.out.println(guestbookRepository.save(guestbook));
+        IntStream.rangeClosed(startInclusive, endInclusive).forEach(i -> {
+            assertThat(guestbookRepository.findByTitle("Title" + i)).isNotEmpty();
         });
     }
 
     @Test
     @DisplayName("방명록 수정")
     void update() {
-        Optional<Guestbook> result = guestbookRepository.findById(300L);
+        Guestbook guestbook = Guestbook.builder()
+                .title("test title")
+                .content("test content")
+                .writer("user")
+                .build();
+        guestbookRepository.save(guestbook);
 
-        result.ifPresent(guestbook -> {
-            guestbook.changeTitle("Changed Title....");
-            guestbook.changeContent("Changed Content....");
+        String newTitle = "new title";
+        String newContent = "new content";
 
-            guestbookRepository.save(guestbook);
-        });
+        guestbook.changeTitle(newTitle);
+        guestbook.changeContent(newContent);
+        guestbookRepository.save(guestbook);
+
+        Optional<Guestbook> optionalGuestbook = guestbookRepository.findById(guestbook.getGno());
+        assertThat(optionalGuestbook.get().getTitle()).isEqualTo(newTitle);
+        assertThat(optionalGuestbook.get().getContent()).isEqualTo(newContent);
     }
 
-    // querydsl 테스트
     @Test
     @DisplayName("Querydsl 단일 항목 검색")
     void querydslTest1() {
