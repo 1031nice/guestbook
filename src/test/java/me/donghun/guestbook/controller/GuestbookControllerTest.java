@@ -29,8 +29,8 @@ class GuestbookControllerTest {
     GuestbookRepository guestbookRepository;
 
     @Test
-    @DisplayName("삭제")
-    void delete() throws Exception {
+    @DisplayName("POST /guestbook/remove 방명록 삭제")
+    void deleteById() throws Exception {
         Guestbook guestbook = Guestbook.builder()
                 .title("test_title")
                 .content("test_content")
@@ -49,8 +49,8 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("수정 화면으로 이동")
-    void modifyView() throws Exception {
+    @DisplayName("GET /guestbook/modify 수정 화면으로 이동")
+    void routeToModifyView() throws Exception {
         mockMvc.perform(get("/guestbook/modify")
                         .param("gno", "150"))
                 .andExpect(status().isOk())
@@ -60,7 +60,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("수정")
+    @DisplayName("POST /guestbook/modify 방명록의 제목과 내용 수정")
     @Transactional
     void modify() throws Exception {
         Guestbook guestbook = Guestbook.builder()
@@ -88,7 +88,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("조회")
+    @DisplayName("GET /guestbook/read 조회 화면으로 이동")
     void read() throws Exception {
         mockMvc.perform(get("/guestbook/read")
                         .param("gno", "150"))
@@ -99,7 +99,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("등록")
+    @DisplayName("POST /guestbook/register 방명록 등록")
     @Transactional
     void register() throws Exception {
         String title = "test_title";
@@ -116,7 +116,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("등록 화면으로 이동")
+    @DisplayName("GET /guestbook/register 등록 화면으로 이동")
     void registerView() throws Exception {
         mockMvc.perform(get("/guestbook/register"))
                 .andExpect(view().name("guestbook/register"))
@@ -125,7 +125,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("루트 요청시 목록 화면으로 이동")
+    @DisplayName("GET / 방명록 목록 화면으로 이동")
     void index() throws Exception {
         mockMvc.perform(get("/guestbook/"))
                 .andExpect(status().is3xxRedirection())
@@ -133,7 +133,7 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("목록 조회")
+    @DisplayName("GET /guestbook/list 방명록 목록 화면으로 이동")
     void listView() throws Exception {
         mockMvc.perform(get("/guestbook/list"))
                 .andExpect(view().name("guestbook/list"))

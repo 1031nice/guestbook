@@ -25,7 +25,7 @@ class GuestbookServiceTest {
     private GuestbookRepository guestbookRepository;
 
     @Test
-    @DisplayName("목록 조회")
+    @DisplayName("PageRequestDTO를 통해 PageResultDTO 획득")
     void getList() {
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
                 .page(17)
@@ -46,7 +46,7 @@ class GuestbookServiceTest {
     }
 
     @Test
-    @DisplayName("등록")
+    @DisplayName("GuestbookDTO를 통해 DB에 방명록 저장")
     @Transactional
     // @Transactional을 붙이면 sql이 날아가더라도(콘솔에 찍히더라도) DB에는 아예 반영되지 않는다
     void register() {
