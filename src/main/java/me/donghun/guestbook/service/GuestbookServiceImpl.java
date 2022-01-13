@@ -2,7 +2,6 @@ package me.donghun.guestbook.service;
 
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import me.donghun.guestbook.dto.GuestbookDTO;
 import me.donghun.guestbook.dto.PageRequestDTO;
 import me.donghun.guestbook.dto.PageResultDTO;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Log4j2
 @RequiredArgsConstructor
 public class GuestbookServiceImpl implements GuestbookService {
 
@@ -45,15 +43,8 @@ public class GuestbookServiceImpl implements GuestbookService {
 
     @Override
     public Long register(GuestbookDTO dto) {
-        log.info("DTO------------------");
-        log.info(dto);
-
         Guestbook entity = dtoToEntity(dto);
-
-        log.info(entity);
-
         guestbookRepository.save(entity);
-
         return entity.getGno();
     }
 
