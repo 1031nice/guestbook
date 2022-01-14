@@ -69,12 +69,11 @@ class GuestbookControllerTest {
     }
 
     private Guestbook createGuestbook() {
-        Guestbook guestbook = Guestbook.builder()
+        return Guestbook.builder()
                 .title("test_title")
                 .content("test_content")
                 .writer("test_writer")
                 .build();
-        return guestbook;
     }
 
     @Test
@@ -101,14 +100,16 @@ class GuestbookControllerTest {
                         .param("title", "")
                         .param("content", "test_content")
                         .param("writer", "test_writer"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("guestbookDTO", "title"))
                 .andDo(print());
 
         mockMvc.perform(post("/guestbook/register")
                         .param("title", "test_title")
                         .param("content", "")
                         .param("writer", "test_writer"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("guestbookDTO", "content"))
                 .andDo(print());
     }
 

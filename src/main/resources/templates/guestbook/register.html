@@ -7,20 +7,22 @@
 
         <h1 class="mt-4">GuestBook Register Page</h1>
 
-        <form th:action="@{/guestbook/register}" th:method="post">
+        <form th:action="@{/guestbook/register}" th:object="${guestbookDTO}" th:method="post">
             <div class="form-group">
                 <label >Title</label>
-                <input type="text" class="form-control" name="title" placeholder="Enter Title">
+                <input type="text" th:value="*{title}" class="form-control" name="title" placeholder="Enter Title">
             </div>
             <div class="form-group">
                 <label >Content</label>
-                <textarea class="form-control" rows="5" name="content"></textarea>
+                <textarea class="form-control" th:value="*{content}" rows="5" name="content"></textarea>
             </div>
             <div class="form-group">
                 <label >Writer</label>
-                <input type="text" class="form-control" name="writer" placeholder="Enter Writer">
+                <input type="text" class="form-control" th:value="*{writer}" name="writer" placeholder="Enter Writer">
             </div>
 
+            <p th:if="${#fields.hasErrors('title')}">제목은 비어있을 수 없습니다</p>
+            <p th:if="${#fields.hasErrors('content')}">내용은 비어있을 수 없습니다</p>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 

@@ -6,11 +6,14 @@ import me.donghun.guestbook.dto.PageRequestDTO;
 import me.donghun.guestbook.service.GuestbookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/guestbook")
@@ -31,11 +34,18 @@ public class GuestbookController {
 
     // UrlBasedViewResolver
     @GetMapping("/register")
-    public void register() {
+    public void register(Model model) {
+        model.addAttribute("guestbookDTO", new GuestbookDTO());
     }
 
     @PostMapping("/register")
-    public String register(GuestbookDTO dto, RedirectAttributes redirectAttributes) {
+    public String register(@Valid GuestbookDTO dto,
+                           BindingResult bindingResult,
+                           RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            return "/guestbook/register";
+        }
+
         Long gno = guestbookService.register(dto);
         redirectAttributes.addFlashAttribute("msg", gno);
         return "redirect:/guestbook/list";
