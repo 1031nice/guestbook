@@ -94,6 +94,24 @@ class GuestbookControllerTest {
         assertThat(guestbookRepository.findByTitle(title)).isNotEmpty();
     }
 
+    @Test
+    @DisplayName("방명록의 제목 또는 내용이 비어있을 경우 등록 실패")
+    void registerFail_emptyTitleOrEmptyContent() throws Exception {
+        mockMvc.perform(post("/guestbook/register")
+                        .param("title", "")
+                        .param("content", "test_content")
+                        .param("writer", "test_writer"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        mockMvc.perform(post("/guestbook/register")
+                        .param("title", "test_title")
+                        .param("content", "")
+                        .param("writer", "test_writer"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
 
     @Test
     @DisplayName("GET /guestbook/read 조회 화면으로 이동")
