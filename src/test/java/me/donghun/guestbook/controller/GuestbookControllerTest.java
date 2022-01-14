@@ -29,13 +29,9 @@ class GuestbookControllerTest {
     GuestbookRepository guestbookRepository;
 
     @Test
-    @DisplayName("삭제")
-    void delete() throws Exception {
-        Guestbook guestbook = Guestbook.builder()
-                .title("test_title")
-                .content("test_content")
-                .writer("test_writer")
-                .build();
+    @DisplayName("POST /guestbook/remove 방명록 삭제")
+    void deleteById() throws Exception {
+        Guestbook guestbook = createGuestbook();
         guestbookRepository.save(guestbook);
 
         mockMvc.perform(post("/guestbook/remove")
@@ -49,25 +45,10 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("수정 화면으로 이동")
-    void modifyView() throws Exception {
-        mockMvc.perform(get("/guestbook/modify")
-                        .param("gno", "150"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("dto"))
-                .andExpect(model().attributeExists("requestDTO"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("수정")
+    @DisplayName("POST /guestbook/modify 방명록의 제목과 내용 수정")
     @Transactional
     void modify() throws Exception {
-        Guestbook guestbook = Guestbook.builder()
-                .title("test_title")
-                .content("test_content")
-                .writer("test_writer")
-                .build();
+        Guestbook guestbook = createGuestbook();
         guestbookRepository.save(guestbook);
 
         String newTitle = "new_title";
@@ -87,19 +68,16 @@ class GuestbookControllerTest {
         assertThat(result.get().getContent()).isEqualTo(newContent);
     }
 
-    @Test
-    @DisplayName("조회")
-    void read() throws Exception {
-        mockMvc.perform(get("/guestbook/read")
-                        .param("gno", "150"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("dto"))
-                .andExpect(model().attributeExists("requestDTO"))
-                .andDo(print());
+    private Guestbook createGuestbook() {
+        return Guestbook.builder()
+                .title("test_title")
+                .content("test_content")
+                .writer("test_writer")
+                .build();
     }
 
     @Test
-    @DisplayName("등록")
+    @DisplayName("POST /guestbook/register 방명록 등록")
     @Transactional
     void register() throws Exception {
         String title = "test_title";
@@ -116,8 +94,51 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("등록 화면으로 이동")
-    void registerView() throws Exception {
+    @DisplayName("방명록의 제목 또는 내용이 비어있을 경우 등록 실패")
+    void registerFail_emptyTitleOrEmptyContent() throws Exception {
+        mockMvc.perform(post("/guestbook/register")
+                        .param("title", "")
+                        .param("content", "test_content")
+                        .param("writer", "test_writer"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("guestbookDTO", "title"))
+                .andDo(print());
+
+        mockMvc.perform(post("/guestbook/register")
+                        .param("title", "test_title")
+                        .param("content", "")
+                        .param("writer", "test_writer"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("guestbookDTO", "content"))
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("GET /guestbook/read 조회 화면으로 이동")
+    void routeToReadView() throws Exception {
+        mockMvc.perform(get("/guestbook/read")
+                        .param("gno", "150"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("dto"))
+                .andExpect(model().attributeExists("requestDTO"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("GET /guestbook/modify 수정 화면으로 이동")
+    void routeToModifyView() throws Exception {
+        mockMvc.perform(get("/guestbook/modify")
+                        .param("gno", "150"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("dto"))
+                .andExpect(model().attributeExists("requestDTO"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("GET /guestbook/register 등록 화면으로 이동")
+    void routeToRegisterView() throws Exception {
         mockMvc.perform(get("/guestbook/register"))
                 .andExpect(view().name("guestbook/register"))
                 .andExpect(status().isOk())
@@ -125,16 +146,16 @@ class GuestbookControllerTest {
     }
 
     @Test
-    @DisplayName("루트 요청시 목록 화면으로 이동")
-    void index() throws Exception {
+    @DisplayName("GET / 방명록 목록 화면으로 이동")
+    void routeToListView() throws Exception {
         mockMvc.perform(get("/guestbook/"))
                 .andExpect(status().is3xxRedirection())
                 .andDo(print());
     }
 
     @Test
-    @DisplayName("목록 조회")
-    void listView() throws Exception {
+    @DisplayName("GET /guestbook/list 방명록 목록 화면으로 이동")
+    void routeToListView2() throws Exception {
         mockMvc.perform(get("/guestbook/list"))
                 .andExpect(view().name("guestbook/list"))
                 .andExpect(model().attributeExists("result"))

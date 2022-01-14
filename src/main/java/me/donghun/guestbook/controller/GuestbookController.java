@@ -1,21 +1,22 @@
 package me.donghun.guestbook.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import me.donghun.guestbook.dto.GuestbookDTO;
 import me.donghun.guestbook.dto.PageRequestDTO;
 import me.donghun.guestbook.service.GuestbookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/guestbook")
-@Log4j2
 @RequiredArgsConstructor
 public class GuestbookController {
 
@@ -28,19 +29,23 @@ public class GuestbookController {
 
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model) {
-        log.info("list....." + pageRequestDTO);
         model.addAttribute("result", guestbookService.getList(pageRequestDTO));
     }
 
+    // UrlBasedViewResolver
     @GetMapping("/register")
-    public void register() {
-        log.info("register get.....");
-        // UrlBasedViewResolver
+    public void register(Model model) {
+        model.addAttribute("guestbookDTO", new GuestbookDTO());
     }
 
     @PostMapping("/register")
-    public String register(GuestbookDTO dto, RedirectAttributes redirectAttributes) {
-        log.info("dto....." + dto);
+    public String register(@Valid GuestbookDTO dto,
+                           BindingResult bindingResult,
+                           RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            return "/guestbook/register";
+        }
+
         Long gno = guestbookService.register(dto);
         redirectAttributes.addFlashAttribute("msg", gno);
         return "redirect:/guestbook/list";
@@ -48,7 +53,6 @@ public class GuestbookController {
 
     @GetMapping({"read", "/modify"})
     public void read(long gno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
-        log.info("gno....." + gno);
         GuestbookDTO dto = guestbookService.read(gno);
         model.addAttribute("dto", dto);
     }
@@ -57,22 +61,16 @@ public class GuestbookController {
     public String modify(GuestbookDTO dto,
                          @ModelAttribute("requestDTO") PageRequestDTO requestDTO,
                          RedirectAttributes redirectAttributes) {
-        log.info("post modify.....");
-        log.info("dto....." + dto);
-
         guestbookService.modify(dto);
-
         redirectAttributes.addAttribute("type",requestDTO.getType());
         redirectAttributes.addAttribute("keyword",requestDTO.getKeyword());
         redirectAttributes.addAttribute("page", requestDTO.getPage());
         redirectAttributes.addAttribute("gno", dto.getGno());
-
         return "redirect:/guestbook/read";
     }
 
     @PostMapping("/remove")
     public String remove(long gno, RedirectAttributes redirectAttributes) {
-        log.info("gno....." + gno);
         guestbookService.remove(gno);
         redirectAttributes.addFlashAttribute("msg", gno);
         return "redirect:/guestbook/list";
